@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuesta de Satisfacción - TRIMAX</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         * {
             margin: 0;
@@ -239,6 +238,7 @@
             </div>
 
             <form id="survey-form">
+                
                 <div class="question">
                     <div class="question-text">¿Cómo calificarías tu experiencia en TRIMAX?</div>
                     <div class="ratings">
