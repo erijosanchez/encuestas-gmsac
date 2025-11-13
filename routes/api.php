@@ -72,4 +72,3 @@ Route::get('/health', function () {
         'timestamp' => now()->toDateTimeString(),
     ]);
 });
-

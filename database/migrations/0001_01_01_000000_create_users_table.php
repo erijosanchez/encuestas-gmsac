@@ -17,10 +17,19 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'consultor', 'sede'])->default('consultor');
+            $table->foreignId('consultor_id')->nullable()->constrained('users')->onDelete('set null'); // Consultor asignado a la sede
+            $table->string('unique_token', 100)->unique()->nullable(); // Token único para la firma
+            $table->boolean('is_active')->default(true);
+            $table->string('phone')->nullable();
+            $table->string('location')->nullable(); // Ubicación de la sede
             $table->rememberToken();
             $table->timestamps();
+            
+            // Índices
+            $table->index('consultor_id');
         });
-
+        
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
