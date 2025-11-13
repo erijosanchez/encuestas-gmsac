@@ -1,75 +1,40 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Web\AuthWebController;
+use App\Http\Controllers\Web\DashboardWebController;
+use App\Http\Controllers\Web\UsersWebController;
 use App\Http\Controllers\SurveyController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Web Routes
 |--------------------------------------------------------------------------
 */
 
-// Rutas públicas - Encuestas
-Route::prefix('encuesta')->group(function () {
-    // Obtener formulario de encuesta por token
-    Route::get('/{token}', [SurveyController::class, 'show']);
-    
-    // Enviar encuesta
-    Route::post('/{token}', [SurveyController::class, 'store']);
+// Ruta raíz redirige al login
+Route::get('/', function () {
+    return redirect()->route('login');
 });
 
-// Rutas de autenticación
-Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    
-    // Rutas protegidas
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [AuthController::class, 'me']);
-        Route::post('/change-password', [AuthController::class, 'changePassword']);
-    });
-});
+// Rutas de autenticación (públicas)
+Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthWebController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthWebController::class, 'logout'])->name('logout');
 
-// Rutas protegidas - Admin Panel
-Route::middleware('auth:sanctum')->group(function () {
+// Encuesta pública (sin autenticación)
+Route::get('/encuesta/{token}', function($token) {
+    return view('survey.form', compact('token'));
+})->name('survey.show');
+
+// Rutas protegidas (requieren autenticación)
+Route::middleware(['auth'])->group(function () {
     
     // Dashboard
-    Route::prefix('dashboard')->group(function () {
-        Route::get('/', [DashboardController::class, 'index']);
-        Route::get('/compare', [DashboardController::class, 'compare']);
-        Route::get('/export', [DashboardController::class, 'export']);
-    });
+    Route::get('/dashboard', [DashboardWebController::class, 'index'])->name('dashboard');
     
-    // Gestión de usuarios (Consultores y Sedes)
-    Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/', [UserController::class, 'store']);
-        Route::get('/consultores', [UserController::class, 'getConsultores']); // Listar consultores disponibles
-        Route::get('/{id}', [UserController::class, 'show']);
-        Route::put('/{id}', [UserController::class, 'update']);
-        Route::delete('/{id}', [UserController::class, 'destroy']);
-        Route::post('/{id}/regenerate-token', [UserController::class, 'regenerateToken']);
-        Route::get('/{id}/statistics', [UserController::class, 'statistics']);
-    });
+    // Gestión de usuarios
+    Route::resource('users', UsersWebController::class);
+    Route::post('/users/{id}/regenerate-token', [UsersWebController::class, 'regenerateToken'])->name('users.regenerate-token');
     
-    // Encuestas - Admin
-    Route::prefix('surveys')->group(function () {
-        Route::get('/', [SurveyController::class, 'index']);
-        Route::get('/statistics', [SurveyController::class, 'statistics']);
-    });
 });
-
-// Ruta de prueba
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'message' => 'TRIMAX Encuestas API is running',
-        'version' => '1.0.0',
-        'timestamp' => now()->toDateTimeString(),
-    ]);
-});
-
