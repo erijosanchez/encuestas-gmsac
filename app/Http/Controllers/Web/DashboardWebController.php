@@ -64,6 +64,10 @@ class DashboardWebController extends Controller
             ->take(10)
             ->get();
 
+        $avgColor =
+            $avgRating >= 3.50 ? 'green' : ($avgRating >= 2.50 ? '#9c780cff' : '#c13b47ff');
+
+
         return view('dashboard.index', compact(
             'totalSurveys',
             'totalConsultores',
@@ -77,7 +81,8 @@ class DashboardWebController extends Controller
             'topSedes',
             'recentSurveys',
             'startDate',
-            'endDate'
+            'endDate',
+            'avgColor'
         ));
     }
 }
