@@ -12,11 +12,11 @@
     </div>
 
     <nav class="sidebar-menu">
-        <a href="#" class="menu-item active">
+        <a href="{{ route('dashboard') }}" class="menu-item active">
             <i class="bi bi-bar-chart-fill"></i>
             <span class="menu-text">Resumen general</span>
         </a>
-        <a href="#" class="menu-item">
+        <a href="{{ route('dashboard.detallezona') }}" class="menu-item">
             <i class="bi bi-geo-alt-fill"></i>
             <span class="menu-text">Detalles por zona</span>
         </a>

@@ -85,4 +85,9 @@ class DashboardWebController extends Controller
             'avgColor'
         ));
     }
+
+    public function detallezona (Request $request)
+    {
+        return view('dashboard.detallesxzona');
+    }
 }

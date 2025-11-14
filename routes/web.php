@@ -30,8 +30,12 @@ Route::get('/encuesta/{token}', function($token) {
 // Rutas protegidas (requieren autenticación)
 Route::middleware(['auth'])->group(function () {
     
-    // Dashboard
+    // Dashboard -> links del sidebar
     Route::get('/dashboard', [DashboardWebController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/detalles-zona', [DashboardWebController::class, 'detallezona' ])->name('dashboard.detallezona');
+    Route::get('/dashboard/alertas', [DashboardWebController::class, 'alertas'])->name('dashboard.alertas');
+    Route::get('/dashboard/tendencias', [DashboardWebController::class, 'tendencias'])->name('dashboar.tendenc');
+    Route::get('/dashboard/reconocimientos', [DashboardWebController::class, 'reconocimientos'])->name('dashboard.reconocimientos');
     
     // Gestión de usuarios
     Route::resource('users', UsersWebController::class);
