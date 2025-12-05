@@ -112,8 +112,8 @@
     <div class="main-content">
         <div class="form-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="bi bi-person-plus-fill"></i> Crear Nuevo Usuario</h2>
-                <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
+                <h2><i class="bi bi-pencil-fill"></i> Editar Usuario</h2>
+                <a href="{{ route('users.show', $user->id) }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Volver
                 </a>
             </div>
@@ -129,15 +129,16 @@
             </div>
             @endif
 
-            <form method="POST" action="{{ route('users.store') }}" id="createUserForm">
+            <form method="POST" action="{{ route('users.update', $user->id) }}" id="createUserForm">
                 @csrf
+                @method('PUT')
 
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <label class="form-label">
                             <i class="bi bi-person"></i> Nombre Completo *
                         </label>
-                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required placeholder="Ej: Juan Pérez Consultor">
+                        <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required placeholder="Ej: Juan Pérez Consultor">
                         <small class="text-muted">Nombre que aparecerá en las encuestas</small>
                     </div>
 
@@ -145,24 +146,24 @@
                         <label class="form-label">
                             <i class="bi bi-envelope"></i> Email *
                         </label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" required placeholder="ejemplo@trimax.com">
+                        <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required placeholder="ejemplo@trimax.com">
                         <small class="text-muted">Email único para acceso al sistema</small>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">
-                            <i class="bi bi-lock"></i> Contraseña *
+                            <i class="bi bi-lock"></i> Nueva Contraseña (opcional)
                         </label>
-                        <input type="password" name="password" id="password" class="form-control" required minlength="8" placeholder="Mínimo 8 caracteres">
+                        <input type="password" name="password" id="password" class="form-control" minlength="8" placeholder="Dejar en blanco para mantener">
                         <div class="password-strength" id="passwordStrength"></div>
                         <small class="text-muted" id="strengthText"></small>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">
-                            <i class="bi bi-lock-fill"></i> Confirmar Contraseña *
+                            <i class="bi bi-lock-fill"></i> Confirmar Nueva Contraseña
                         </label>
-                        <input type="password" name="password_confirmation" class="form-control" required minlength="8" placeholder="Repetir contraseña">
+                        <input type="password" name="password_confirmation" class="form-control" minlength="8" placeholder="Confirmar si cambia contraseña">
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -171,16 +172,16 @@
                         </label>
                         <select name="role" id="role" class="form-select" required>
                             <option value="">Seleccionar...</option>
-                            <option value="consultor" {{ old('role') == 'consultor' ? 'selected' : '' }}>Consultor</option>
-                            <option value="sede" {{ old('role') == 'sede' ? 'selected' : '' }}>Sede</option>
+                            <option value="consultor" {{ old('role', $user->role) == 'consultor' ? 'selected' : '' }}>Consultor</option>
+                            <option value="sede" {{ old('role', $user->role) == 'sede' ? 'selected' : '' }}>Sede</option>
                         </select>
                     </div>
 
-                    <div class="col-md-6 mb-3 location-field" id="locationField">
+                    <div class="col-md-6 mb-3 location-field {{ $user->role == 'sede' ? 'show' : '' }}" id="locationField">
                         <label class="form-label">
                             <i class="bi bi-geo-alt"></i> Ubicación *
                         </label>
-                        <input type="text" name="location" class="form-control" value="{{ old('location') }}" placeholder="Ej: Lima Centro, Arequipa">
+                        <input type="text" name="location" class="form-control" value="{{ old('location', $user->location) }}" placeholder="Ej: Lima Centro, Arequipa">
                         <small class="text-muted">Requerido solo para sedes</small>
                     </div>
                 </div>
@@ -188,17 +189,17 @@
                 <div class="alert alert-info mt-4">
                     <strong><i class="bi bi-info-circle"></i> Información:</strong>
                     <ul class="mb-0 mt-2">
-                        <li>Al crear el usuario se generará automáticamente un <strong>link único</strong> de encuesta</li>
-                        <li>El usuario estará <strong>activo</strong> por defecto</li>
-                        <li>Podrás ver el link de encuesta en la siguiente pantalla</li>
+                        <li>Si no cambias la contraseña, se mantendrá la actual</li>
+                        <li>El <strong>link de encuesta</strong> no cambiará al editar</li>
+                        <li>Las estadísticas y encuestas se mantendrán intactas</li>
                     </ul>
                 </div>
 
                 <div class="d-flex gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Crear Usuario
+                        <i class="bi bi-check-circle"></i> Guardar Cambios
                     </button>
-                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('users.show', $user->id) }}" class="btn btn-outline-secondary">
                         <i class="bi bi-x-circle"></i> Cancelar
                     </a>
                 </div>

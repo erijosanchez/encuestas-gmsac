@@ -6,37 +6,37 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Consultor o Sede evaluado
-            $table->string('client_name')->nullable(); // Nombre del cliente (opcional)
-            $table->string('client_email')->nullable(); // Email del cliente (opcional)
-
-            // Preguntas de la encuesta (1-4: Malo, Regular, Bueno, Muy Bueno)
-            $table->tinyInteger('experience_rating'); // ¿Cómo calificarías tu experiencia en TRIMAX?
-            $table->tinyInteger('service_quality_rating'); // Calidad de atención
-            $table->tinyInteger('response_time_rating')->nullable(); // Tiempo de respuesta
-            $table->tinyInteger('recommendation_rating')->nullable(); // ¿Recomendarías?
-
-            $table->text('comments')->nullable(); // Comentarios adicionales
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            
+            // Datos del cliente (opcional)
+            $table->string('client_name')->nullable();
+            
+            // Pregunta 1: ¿Cómo calificarías tu experiencia en TRIMAX?
+            $table->tinyInteger('experience_rating');
+            
+            // Pregunta 2: ¿Cómo evaluarías la atención y soporte? (Consultor/Sede)
+            $table->tinyInteger('service_quality_rating');
+            
+            // Comentarios
+            $table->text('comments')->nullable();
+            
+            // Información adicional
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->timestamps();
 
-            // Índices para búsquedas rápidas
+            // Índices
             $table->index('user_id');
+            $table->index('experience_rating');
+            $table->index('service_quality_rating');
             $table->index('created_at');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('surveys');

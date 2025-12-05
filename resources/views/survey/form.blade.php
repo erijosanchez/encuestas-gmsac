@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta de Satisfacción - TRIMAX</title>
+    <title>Encuesta de satisfacción - TRIMAX</title>
     <style>
         * {
             margin: 0;
@@ -13,49 +12,94 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: 'TRIMAX';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 250px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            letter-spacing: 20px;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .container {
             background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
-        .logo {
+        .header {
+            background: #1565C0;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: -50px -40px 30px -40px;
+            border-radius: 20px 20px 0 0;
+            font-size: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .evaluado-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
             margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
         }
 
-        .logo h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .logo p {
+        .evaluado-info .label {
             color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .evaluado-info .name {
+            color: #1565C0;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .evaluado-info .type {
+            color: #888;
+            font-size: 13px;
         }
 
         .question {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .question-text {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1565C0;
             text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .ratings {
@@ -65,273 +109,383 @@
         }
 
         .rating-btn {
-            background: #f8f9fa;
+            background: white;
             border: 3px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 20px 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .rating-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .rating-btn.active {
-            border-color: #667eea;
-            background: #f0f4ff;
-        }
-
-        .rating-btn.excellent.active {
+        .rating-btn.active.muy-feliz {
             border-color: #4CAF50;
-            background: #e8f5e9;
+            background: #E8F5E9;
         }
 
-        .rating-btn.good.active {
+        .rating-btn.active.feliz {
             border-color: #2196F3;
-            background: #e3f2fd;
+            background: #E3F2FD;
         }
 
-        .rating-btn.regular.active {
+        .rating-btn.active.insatisfecho {
             border-color: #FF9800;
-            background: #fff3e0;
+            background: #FFF3E0;
         }
 
-        .rating-btn.bad.active {
+        .rating-btn.active.muy-insatisfecho {
             border-color: #F44336;
-            background: #ffebee;
+            background: #FFEBEE;
         }
 
         .emoji {
-            font-size: 48px;
+            font-size: 50px;
             margin-bottom: 10px;
+            display: block;
         }
 
         .rating-label {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
             color: #333;
+            text-transform: uppercase;
+            line-height: 1.2;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-weight: 600;
             color: #333;
+            font-size: 14px;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
+            border-color: #1565C0;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px;
+            background: #1a1a2e;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            margin-top: 20px;
         }
 
         .submit-btn:hover {
-            opacity: 0.9;
+            background: #16213e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .submit-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .trimax-logo {
+            text-align: center;
+            margin-top: 30px;
         }
 
-        .alert-danger {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef5350;
-        }
-
-        .alert-success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #66bb6a;
+        .trimax-logo svg {
+            width: 150px;
+            height: auto;
         }
 
         .success-container {
             text-align: center;
+            display: none;
         }
 
-        .success-container .emoji {
+        .success-container.show {
+            display: block;
+        }
+
+        .success-emoji {
             font-size: 80px;
             margin: 20px 0;
         }
 
-        .evaluado-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
+        .success-container h2 {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 15px;
         }
 
-        .evaluado-info strong {
-            color: #667eea;
-            font-size: 18px;
-        }
-
-        .evaluado-info small {
+        .success-container p {
             color: #666;
+            font-size: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            display: none;
+        }
+
+        .loading.show {
             display: block;
-            margin-top: 5px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1565C0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header {
+                margin: -30px -20px 20px -20px;
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .ratings {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .emoji {
+                font-size: 40px;
+            }
+
+            .rating-label {
+                font-size: 11px;
+            }
+
+            body::before {
+                font-size: 150px;
+            }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        <div class="logo">
-            <h1>🔷 TRIMAX</h1>
-            <p>Encuesta de Satisfacción</p>
-        </div>
-
-        <div id="loading" style="text-align: center; display: none;">
+        <div class="loading show" id="loading">
+            <div class="spinner"></div>
             <p>Cargando encuesta...</p>
         </div>
 
-        <div id="error-container" style="display: none;">
-            <div class="alert alert-danger" id="error-message"></div>
-        </div>
-
         <div id="survey-container" style="display: none;">
+            <div class="header">Encuesta de satisfacción - TRIMAX</div>
+
             <div class="evaluado-info">
-                <div>Evaluando a:</div>
-                <strong id="evaluado-name"></strong>
-                <small id="evaluado-type"></small>
+                <div class="label">Evaluando a:</div>
+                <div class="name" id="evaluado-name"></div>
+                <div class="type" id="evaluado-type"></div>
             </div>
 
             <form id="survey-form">
-                
+                <!-- Pregunta 1: Experiencia general -->
                 <div class="question">
                     <div class="question-text">¿Cómo calificarías tu experiencia en TRIMAX?</div>
                     <div class="ratings">
-                        <div class="rating-btn excellent" data-value="4">
-                            <div class="emoji">😊</div>
-                            <div class="rating-label">Excelente</div>
+                        <div class="rating-btn muy-feliz" data-question="1" data-value="4">
+                            <span class="emoji">😊</span>
+                            <div class="rating-label">Muy<br>Feliz</div>
                         </div>
-                        <div class="rating-btn good" data-value="3">
-                            <div class="emoji">🙂</div>
-                            <div class="rating-label">Bueno</div>
+                        <div class="rating-btn feliz" data-question="1" data-value="3">
+                            <span class="emoji">🙂</span>
+                            <div class="rating-label">Feliz</div>
                         </div>
-                        <div class="rating-btn regular" data-value="2">
-                            <div class="emoji">😐</div>
-                            <div class="rating-label">Regular</div>
+                        <div class="rating-btn insatisfecho" data-question="1" data-value="2">
+                            <span class="emoji">😐</span>
+                            <div class="rating-label">Insatisfecho</div>
                         </div>
-                        <div class="rating-btn bad" data-value="1">
-                            <div class="emoji">😞</div>
-                            <div class="rating-label">Malo</div>
+                        <div class="rating-btn muy-insatisfecho" data-question="1" data-value="1">
+                            <span class="emoji">😞</span>
+                            <div class="rating-label">Muy<br>Insatisfecho</div>
                         </div>
                     </div>
                     <input type="hidden" name="experience_rating" id="experience_rating" required>
                 </div>
 
+                <!-- Pregunta 2: Atención (cambia según tipo) -->
+                <div class="question">
+                    <div class="question-text" id="service-quality-question">
+                        ¿Cómo evaluarías la atención y el soporte de tu Consultor Trimax?
+                    </div>
+                    <div class="ratings">
+                        <div class="rating-btn muy-feliz" data-question="2" data-value="4">
+                            <span class="emoji">😊</span>
+                            <div class="rating-label">Muy<br>Feliz</div>
+                        </div>
+                        <div class="rating-btn feliz" data-question="2" data-value="3">
+                            <span class="emoji">🙂</span>
+                            <div class="rating-label">Feliz</div>
+                        </div>
+                        <div class="rating-btn insatisfecho" data-question="2" data-value="2">
+                            <span class="emoji">😐</span>
+                            <div class="rating-label">Insatisfecho</div>
+                        </div>
+                        <div class="rating-btn muy-insatisfecho" data-question="2" data-value="1">
+                            <span class="emoji">😞</span>
+                            <div class="rating-label">Muy<br>Insatisfecho</div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="service_quality_rating" id="service_quality_rating" required>
+                </div>
+
                 <div class="form-group">
                     <label>Tu nombre (opcional)</label>
-                    <input type="text" name="client_name" id="client_name">
+                    <input type="text" name="client_name" id="client_name" placeholder="Escribe tu nombre aquí...">
                 </div>
 
                 <div class="form-group">
-                    <label>Tu email (opcional)</label>
-                    <input type="email" name="client_email" id="client_email">
+                    <label>Cuéntanos brevemente qué podríamos mejorar o qué te gustó más de nuestra atención.</label>
+                    <textarea name="comments" id="comments" placeholder="Tu opinión es anónima y nos ayuda a mejorar..."></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label>Comentarios adicionales (opcional)</label>
-                    <textarea name="comments" id="comments" placeholder="Cuéntanos más sobre tu experiencia..."></textarea>
-                </div>
+                <button type="submit" class="submit-btn" id="submit-btn">ENVIAR</button>
 
-                <button type="submit" class="submit-btn" id="submit-btn">Enviar Encuesta</button>
+                <div class="trimax-logo">
+                    <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                        <text x="10" y="35" font-family="Arial, sans-serif" font-size="32" font-weight="900" fill="#1565C0">TRIMAX</text>
+                    </svg>
+                </div>
             </form>
         </div>
 
-        <div id="success-container" class="success-container" style="display: none;">
-            <div class="emoji">✅</div>
-            <h2 style="color: #2e7d32; margin-bottom: 10px;">¡Gracias por tu opinión!</h2>
-            <p style="color: #666;">Tu encuesta ha sido enviada exitosamente.</p>
+        <div class="success-container" id="success-container">
+            <div class="success-emoji">✅</div>
+            <h2>¡Gracias por tu opinión!</h2>
+            <p>Tu encuesta ha sido enviada exitosamente.</p>
+            <div class="trimax-logo">
+                <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Arial, sans-serif" font-size="32" font-weight="900" fill="#4CAF50">TRIMAX</text>
+                </svg>
+            </div>
         </div>
     </div>
 
     <script>
         const token = '{{ $token }}';
-        let selectedRating = null;
+        let selectedRatings = {
+            experience: null,
+            service_quality: null
+        };
+        let userRole = null;
+        let formStarted = false;
 
-        // Cargar datos de la encuesta
         document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('loading').style.display = 'block';
-
             try {
                 const response = await fetch(`/api/encuesta/${token}`);
                 const data = await response.json();
 
                 if (data.success) {
+                    userRole = data.data.user.role;
+                    
                     document.getElementById('evaluado-name').textContent = data.data.user.name;
                     document.getElementById('evaluado-type').textContent =
-                        data.data.user.role === 'consultor' ? 'Consultor' :
+                        userRole === 'consultor' ? 'Consultor' :
                         `Sede - ${data.data.user.location || ''}`;
 
-                    document.getElementById('loading').style.display = 'none';
+                    const serviceQualityQuestion = document.getElementById('service-quality-question');
+                    if (userRole === 'consultor') {
+                        serviceQualityQuestion.textContent = '¿Cómo evaluarías la atención y el soporte de tu Consultor Trimax?';
+                    } else {
+                        serviceQualityQuestion.textContent = '¿Cómo evaluarías la atención y el soporte de tu Sede Trimax?';
+                    }
+
+                    document.getElementById('loading').classList.remove('show');
                     document.getElementById('survey-container').style.display = 'block';
                 } else {
-                    showError('Encuesta no encontrada o inactiva');
+                    alert('Encuesta no encontrada o inactiva');
                 }
             } catch (error) {
-                showError('Error al cargar la encuesta. Verifica que el servidor esté funcionando.');
+                alert('Error al cargar la encuesta');
             }
         });
 
-        // Manejar selección de rating
         document.querySelectorAll('.rating-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+                formStarted = true;
+                const question = this.dataset.question;
+                
+                document.querySelectorAll(`.rating-btn[data-question="${question}"]`).forEach(b => {
+                    b.classList.remove('active');
+                });
+                
                 this.classList.add('active');
-                selectedRating = this.dataset.value;
-                document.getElementById('experience_rating').value = selectedRating;
+                
+                if (question === '1') {
+                    selectedRatings.experience = this.dataset.value;
+                    document.getElementById('experience_rating').value = selectedRatings.experience;
+                } else if (question === '2') {
+                    selectedRatings.service_quality = this.dataset.value;
+                    document.getElementById('service_quality_rating').value = selectedRatings.service_quality;
+                }
             });
         });
 
-        // Enviar formulario
+        document.getElementById('client_name').addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                formStarted = true;
+            }
+        });
+
+        document.getElementById('comments').addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                formStarted = true;
+            }
+        });
+
         document.getElementById('survey-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            if (!selectedRating) {
-                alert('Por favor selecciona una calificación');
+            if (!selectedRatings.experience || !selectedRatings.service_quality) {
+                alert('Por favor selecciona una calificación para ambas preguntas');
                 return;
             }
 
@@ -340,9 +494,9 @@
             submitBtn.textContent = 'Enviando...';
 
             const formData = {
-                experience_rating: parseInt(selectedRating),
+                experience_rating: parseInt(selectedRatings.experience),
+                service_quality_rating: parseInt(selectedRatings.service_quality),
                 client_name: document.getElementById('client_name').value,
-                client_email: document.getElementById('client_email').value,
                 comments: document.getElementById('comments').value
             };
 
@@ -359,26 +513,27 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    formStarted = false;
                     document.getElementById('survey-container').style.display = 'none';
-                    document.getElementById('success-container').style.display = 'block';
+                    document.getElementById('success-container').classList.add('show');
                 } else {
-                    showError(data.message || 'Error al enviar la encuesta');
+                    alert(data.message || 'Error al enviar la encuesta');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Enviar Encuesta';
+                    submitBtn.textContent = 'ENVIAR';
                 }
             } catch (error) {
-                showError('Error de conexión. Intenta nuevamente.');
+                alert('Error de conexión. Intenta nuevamente.');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Enviar Encuesta';
+                submitBtn.textContent = 'ENVIAR';
             }
         });
 
-        function showError(message) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error-message').textContent = message;
-            document.getElementById('error-container').style.display = 'block';
-        }
+        window.addEventListener('beforeunload', (e) => {
+            if (formStarted && document.getElementById('survey-container').style.display !== 'none') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     </script>
 </body>
-
 </html>

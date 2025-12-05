@@ -1,10 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\AuthWebController;
-use App\Http\Controllers\Web\DashboardWebController;
-use App\Http\Controllers\Web\UsersWebController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,33 +11,34 @@ use App\Http\Controllers\SurveyController;
 |--------------------------------------------------------------------------
 */
 
-// Ruta raíz redirige al login
+// Ruta pública del formulario de encuesta
+Route::get('/encuesta/{token}', [SurveyController::class, 'show'])->name('survey.show');
+
+// Dashboard administrativo
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+// Gestión de Usuarios
+Route::prefix('users')->name('users.')->group(function () {
+    Route::get('/', [UserManagementController::class, 'index'])->name('index');
+    Route::get('/create', [UserManagementController::class, 'create'])->name('create');
+    Route::post('/', [UserManagementController::class, 'store'])->name('store');
+    Route::get('/{id}', [UserManagementController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [UserManagementController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [UserManagementController::class, 'update'])->name('update');
+    Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
+    
+    // Acciones especiales
+    Route::post('/{id}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('toggle-status');
+    Route::post('/{id}/regenerate-token', [UserManagementController::class, 'regenerateToken'])->name('regenerate-token');
+    Route::get('/{id}/preview', [UserManagementController::class, 'preview'])->name('preview');
+    Route::get('/{id}/qr', [UserManagementController::class, 'generateQR'])->name('qr');
+    
+    // Exportar
+    Route::get('/export/csv', [UserManagementController::class, 'export'])->name('export');
+});
+
+// Ruta de inicio
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('dashboard.index');
 });
 
-// Rutas de autenticación (públicas)
-Route::get('/login', [AuthWebController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthWebController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthWebController::class, 'logout'])->name('logout');
-
-// Encuesta pública (sin autenticación)
-Route::get('/encuesta/{token}', function($token) {
-    return view('survey.form', compact('token'));
-})->name('survey.show');
-
-// Rutas protegidas (requieren autenticación)
-Route::middleware(['auth'])->group(function () {
-    
-    // Dashboard -> links del sidebar
-    Route::get('/dashboard', [DashboardWebController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/detalles-zona', [DashboardWebController::class, 'detallezona' ])->name('dashboard.detallezona');
-    Route::get('/dashboard/alertas', [DashboardWebController::class, 'alertas'])->name('dashboard.alertas');
-    Route::get('/dashboard/tendencias', [DashboardWebController::class, 'tendencias'])->name('dashboar.tendenc');
-    Route::get('/dashboard/reconocimientos', [DashboardWebController::class, 'reconocimientos'])->name('dashboard.reconocimientos');
-    
-    // Gestión de usuarios
-    Route::resource('users', UsersWebController::class);
-    Route::post('/users/{id}/regenerate-token', [UsersWebController::class, 'regenerateToken'])->name('users.regenerate-token');
-    
-});

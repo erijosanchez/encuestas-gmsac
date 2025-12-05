@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Survey extends Model
 {
@@ -12,11 +12,8 @@ class Survey extends Model
     protected $fillable = [
         'user_id',
         'client_name',
-        'client_email',
         'experience_rating',
         'service_quality_rating',
-        'response_time_rating',
-        'recommendation_rating',
         'comments',
         'ip_address',
         'user_agent',
@@ -25,29 +22,24 @@ class Survey extends Model
     protected $casts = [
         'experience_rating' => 'integer',
         'service_quality_rating' => 'integer',
-        'response_time_rating' => 'integer',
-        'recommendation_rating' => 'integer',
     ];
 
-    // Relación con el usuario (consultor o sede)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Obtener el texto de la calificación
     public function getRatingTextAttribute()
     {
         return match($this->experience_rating) {
-            4 => 'Excelente',
-            3 => 'Bueno',
-            2 => 'Regular',
-            1 => 'Malo',
+            4 => 'Muy Feliz',
+            3 => 'Feliz',
+            2 => 'Insatisfecho',
+            1 => 'Muy Insatisfecho',
             default => 'N/A',
         };
     }
 
-    // Obtener el emoji de la calificación
     public function getRatingEmojiAttribute()
     {
         return match($this->experience_rating) {
@@ -59,19 +51,27 @@ class Survey extends Model
         };
     }
 
-    // Scope para filtrar por rango de fechas
+    public function getRatingColorAttribute()
+    {
+        return match($this->experience_rating) {
+            4 => '#4CAF50',
+            3 => '##2196F3',
+            2 => '#FF9800',
+            1 => '#F44336',
+            default => '#999',
+        };
+    }
+
     public function scopeDateRange($query, $startDate, $endDate)
     {
         return $query->whereBetween('created_at', [$startDate, $endDate]);
     }
 
-    // Scope para filtrar por usuario
     public function scopeByUser($query, $userId)
     {
         return $query->where('user_id', $userId);
     }
 
-    // Scope para filtrar por calificación
     public function scopeByRating($query, $rating)
     {
         return $query->where('experience_rating', $rating);

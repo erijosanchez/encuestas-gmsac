@@ -15,19 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'consultor', 'sede'])->default('consultor');
-            $table->foreignId('consultor_id')->nullable()->constrained('users')->onDelete('set null'); // Consultor asignado a la sede
-            $table->string('unique_token', 100)->unique()->nullable(); // Token único para la firma
+            $table->string('location')->nullable(); // Para sedes: Lima, Arequipa, etc.
+            $table->string('unique_token')->unique(); // Token único para la encuesta
             $table->boolean('is_active')->default(true);
-            $table->string('phone')->nullable();
-            $table->string('location')->nullable(); // Ubicación de la sede
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            
+
             // Índices
-            $table->index('consultor_id');
+            $table->index('unique_token');
+            $table->index('role');
+            $table->index('is_active');
         });
         
         Schema::create('password_reset_tokens', function (Blueprint $table) {
