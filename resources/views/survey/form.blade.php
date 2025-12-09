@@ -112,6 +112,16 @@
         </div>
     </div>
 
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scroll-indicator">
+        <div class="scroll-text">Desliza hacia abajo</div>
+        <div class="scroll-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+            </svg>
+        </div>
+    </div>
+
     <script>
         const token = '{{ $token }}';
         let selectedRatings = {
@@ -120,7 +130,62 @@
         };
         let userRole = null;
         let formStarted = false;
+        let autoRefreshTimeout = null;
 
+        // ===== SCROLL INDICATOR LOGIC =====
+        function checkScrollIndicator() {
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            const surveyContainer = document.getElementById('survey-container');
+
+            // Solo mostrar si el survey está visible
+            if (surveyContainer.style.display === 'none') {
+                scrollIndicator.classList.remove('show');
+                return;
+            }
+
+            // Verificar si hay contenido fuera del viewport
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Mostrar si hay más contenido abajo y no estamos al final
+            const hasMoreContent = documentHeight > windowHeight + 100; // 100px de margen
+            const isAtBottom = (windowHeight + scrollTop) >= documentHeight - 50; // 50px de margen
+
+            if (hasMoreContent && !isAtBottom) {
+                scrollIndicator.classList.add('show');
+            } else {
+                scrollIndicator.classList.remove('show');
+            }
+        }
+
+        // Smooth scroll al hacer click en la flecha
+        document.getElementById('scroll-indicator').addEventListener('click', function() {
+            window.scrollTo({
+                top: window.pageYOffset + window.innerHeight - 100,
+                behavior: 'smooth'
+            });
+        });
+
+        // Check scroll indicator on scroll and resize
+        window.addEventListener('scroll', checkScrollIndicator);
+        window.addEventListener('resize', checkScrollIndicator);
+
+        // ===== AUTO REFRESH AFTER SUCCESS =====
+        function scheduleAutoRefresh() {
+            // Limpiar cualquier timeout previo
+            if (autoRefreshTimeout) {
+                clearTimeout(autoRefreshTimeout);
+            }
+
+            // Programar refresh después de 2 minutos (120000 ms)
+            autoRefreshTimeout = setTimeout(() => {
+                console.log('Auto-refreshing after 2 minutes...');
+                window.location.reload();
+            }, 120000); // 2 minutos
+        }
+
+        // ===== LOAD SURVEY DATA =====
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(`/api/encuesta/${token}`);
@@ -145,6 +210,9 @@
 
                     document.getElementById('loading').classList.remove('show');
                     document.getElementById('survey-container').style.display = 'block';
+
+                    // Check scroll indicator después de cargar
+                    setTimeout(checkScrollIndicator, 500);
                 } else {
                     alert('Encuesta no encontrada o inactiva');
                 }
@@ -153,6 +221,7 @@
             }
         });
 
+        // ===== RATING BUTTONS =====
         document.querySelectorAll('.rating-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 formStarted = true;
@@ -175,6 +244,7 @@
             });
         });
 
+        // ===== FORM INPUT TRACKING =====
         document.getElementById('client_name').addEventListener('input', function() {
             if (this.value.trim().length > 0) {
                 formStarted = true;
@@ -187,6 +257,7 @@
             }
         });
 
+        // ===== FORM SUBMIT =====
         document.getElementById('survey-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -222,6 +293,18 @@
                     formStarted = false;
                     document.getElementById('survey-container').style.display = 'none';
                     document.getElementById('success-container').classList.add('show');
+
+                    // Ocultar scroll indicator cuando se muestra success
+                    document.getElementById('scroll-indicator').classList.remove('show');
+
+                    // Scroll to top suavemente
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+
+                    // Programar auto-refresh después de 2 minutos
+                    scheduleAutoRefresh();
                 } else {
                     alert(data.message || 'Error al enviar la encuesta');
                     submitBtn.disabled = false;
@@ -234,6 +317,7 @@
             }
         });
 
+        // ===== PREVENT ACCIDENTAL EXIT =====
         window.addEventListener('beforeunload', (e) => {
             if (formStarted && document.getElementById('survey-container').style.display !== 'none') {
                 e.preventDefault();

@@ -30,7 +30,7 @@ body::before {
 
 /* ===== CONTAINER PRINCIPAL ===== */
 .container {
-    max-width: 750px;
+    max-width: 650px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -73,8 +73,7 @@ body::before {
 /* ===== INFO DEL EVALUADO ===== */
 .evaluado-info {
     background: white;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 25px;
     text-align: center;
@@ -98,8 +97,8 @@ body::before {
 /* ===== CONTENEDOR DE PREGUNTAS ===== */
 .question-container {
     background: #fff;
-    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid #1565C0;
     overflow: hidden;
     margin-bottom: 25px;
 }
@@ -107,24 +106,23 @@ body::before {
 .header-question {
     background: #1565C0;
     color: white;
-    padding: 18px 20px;
-    text-transform: uppercase;
-    font-weight: 700;
+    padding: 8px 10px;
+    font-weight: 600;
     text-align: center;
-    font-size: 18px;
+    font-size: 1.5rem;
     letter-spacing: 1px;
 }
 
 .question {
-    padding: 30px 20px;
+    padding: 20px 10px;
 }
 
 .question-text {
     text-align: center;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     line-height: 1.5;
 }
 
@@ -132,7 +130,6 @@ body::before {
 .ratings {
     display: flex;
     justify-content: space-around;
-    gap: 10px;
     flex-wrap: wrap;
 }
 
@@ -146,13 +143,13 @@ body::before {
 }
 
 .rating-btn .emoji {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 42px;
+    font-size: 75px;
     margin: 0 auto 12px;
     transition: all 0.3s ease;
     position: relative;
@@ -205,8 +202,8 @@ body::before {
 
 .rating-label {
     text-transform: uppercase;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     text-align: center;
     color: #555;
     letter-spacing: 0.5px;
@@ -217,7 +214,6 @@ body::before {
 .form-group {
     background: white;
     padding: 25px;
-    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 20px;
 }
@@ -227,14 +223,13 @@ body::before {
     font-weight: 600;
     color: #333;
     margin-bottom: 12px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
     width: 100%;
     border: 2px solid #e0e0e0;
-    border-radius: 8px;
     padding: 12px;
     font-size: 14px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -262,10 +257,10 @@ body::before {
 .submit-btn {
     background: #1a1a2e;
     color: white;
-    padding: 16px 40px;
-    font-size: 16px;
+    padding: 15px 40px;
+    font-size: 18px;
     font-weight: 700;
-    border-radius: 50px;
+    border-radius: 10px;
     border: none;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -498,4 +493,118 @@ body::before {
 /* ===== INPUTS HIDDEN ===== */
 input[type="hidden"] {
     display: none;
+}
+
+/* ===== SCROLL ARROW INDICATOR ===== */
+.scroll-indicator {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInUp 0.5s ease;
+    cursor: pointer;
+}
+
+.scroll-indicator.show {
+    display: flex;
+}
+
+.scroll-arrow {
+    width: 50px;
+    height: 50px;
+    background: #1565C0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(21, 101, 192, 0.4);
+    animation: bounce-arrow 2s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.scroll-arrow:hover {
+    background: #0d47a1;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(21, 101, 192, 0.6);
+}
+
+.scroll-arrow svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+.scroll-text {
+    background: rgba(21, 101, 192, 0.95);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(21, 101, 192, 0.3);
+    animation: pulse-text 2s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes bounce-arrow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse-text {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Ocultar scroll indicator en móviles pequeños donde no es necesario */
+@media (max-height: 900px) and (max-width: 576px) {
+    .scroll-indicator {
+        bottom: 20px;
+    }
+    
+    .scroll-arrow {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .scroll-arrow svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .scroll-text {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .scroll-indicator {
+        bottom: 15px;
+    }
 }
